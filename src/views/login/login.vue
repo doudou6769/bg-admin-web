@@ -42,7 +42,8 @@
   </div>
 </template>
 <script>
-import Language from '../../components/language/Language';
+import Language from '../../components/language/language';
+import {login} from "../../api/sys/user/user.api";
 
 export default {
   components: {
@@ -71,10 +72,18 @@ export default {
     loginSystem() {
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
-          // 如果登录成功 则跳转到首页
-          this.$router.push({
-            name: "main"
-          });
+          login(this.loginForm)
+              .then(res => {
+                  if(res.code === 200){
+                    // 如果登录成功 则跳转到首页
+                    this.$router.push({
+                      name: "main"
+                    });
+                  }else{
+                    // 登录失败则提示用户
+                    this.$Message.error("用户名或密码错误！");
+                  }
+              })
         }
       })
     },
